@@ -157,7 +157,7 @@ export const PostSidebar: React.FC<PostSidebarProps> = ({
                               className="text-xs text-blue-600 font-medium"
                             >
                               {tag}
-                            </span>
+                            </motion.span>
                           ))}
                           {post.hashtags.length > 3 && (
                             <span className="text-xs text-gray-500">
