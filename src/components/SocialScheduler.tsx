@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { CalendarView } from './CalendarView';
 import { PostSidebar } from './PostSidebar';
 import { PostModal } from './PostModal';
 import { Button } from '@/components/ui/button';
 import { Calendar, Edit, Plus } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export interface SocialPost {
   id: string;
@@ -87,8 +87,9 @@ export const SocialScheduler = () => {
   const [selectedPost, setSelectedPost] = useState<SocialPost | null>(null);
   const [viewMode, setViewMode] = useState<'Month' | 'Timeline'>('Month');
   const [showPostModal, setShowPostModal] = useState(false);
+  const [posts, setPosts] = useState<SocialPost[]>(mockPosts);
 
-  const postsForSelectedDate = mockPosts.filter(post => post.date === selectedDate);
+  const postsForSelectedDate = posts.filter(post => post.date === selectedDate);
 
   const handleDateSelect = (date: string) => {
     setSelectedDate(date);
@@ -114,13 +115,40 @@ export const SocialScheduler = () => {
     setShowPostModal(true);
   };
 
+  const handleSavePost = (updatedPost: SocialPost) => {
+    const existingPostIndex = posts.findIndex(p => p.id === updatedPost.id);
+    
+    if (existingPostIndex >= 0) {
+      // Update existing post
+      const updatedPosts = [...posts];
+      updatedPosts[existingPostIndex] = updatedPost;
+      setPosts(updatedPosts);
+    } else {
+      // Add new post
+      setPosts([...posts, updatedPost]);
+    }
+    
+    setShowPostModal(false);
+    setSelectedPost(null);
+  };
+
   return (
-    <div className="min-h-screen bg-white">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen bg-white"
+    >
       {/* Header */}
-      <div className="border-b border-gray-200 bg-white px-6 py-4">
+      <div className="border-b border-gray-200 bg-white/80 backdrop-blur-sm px-6 py-4 sticky top-0 z-40">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-semibold text-gray-900">Social Poster</h1>
+            <motion.h1
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-2xl font-semibold text-gray-900"
+            >
+              Social Poster
+            </motion.h1>
             <div className="flex items-center space-x-2 text-sm text-gray-500">
               <span>Calendar</span>
               <span>Posts</span>
@@ -128,34 +156,40 @@ export const SocialScheduler = () => {
             </div>
           </div>
           <div className="flex items-center space-x-3">
-            <Button 
-              onClick={handleNewPost}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
-            >
-              <Edit className="w-4 h-4" />
-              <span>New post</span>
-            </Button>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button 
+                onClick={handleNewPost}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 shadow-lg hover:shadow-xl transition-all"
+              >
+                <Edit className="w-4 h-4" />
+                <span>New post</span>
+              </Button>
+            </motion.div>
             <div className="flex bg-gray-100 rounded-lg p-1">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setViewMode('Month')}
-                className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                className={`px-3 py-1 rounded text-sm font-medium transition-all ${
                   viewMode === 'Month' 
                     ? 'bg-white text-gray-900 shadow-sm' 
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
                 Month
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setViewMode('Timeline')}
-                className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                className={`px-3 py-1 rounded text-sm font-medium transition-all ${
                   viewMode === 'Timeline' 
                     ? 'bg-white text-gray-900 shadow-sm' 
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
                 Timeline
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -165,7 +199,7 @@ export const SocialScheduler = () => {
         {/* Calendar */}
         <div className="flex-1">
           <CalendarView 
-            posts={mockPosts}
+            posts={posts}
             selectedDate={selectedDate}
             onDateSelect={handleDateSelect}
           />
@@ -183,13 +217,13 @@ export const SocialScheduler = () => {
       {showPostModal && selectedPost && (
         <PostModal
           post={selectedPost}
-          onClose={() => setShowPostModal(false)}
-          onSave={(updatedPost) => {
-            console.log('Saving post:', updatedPost);
+          onClose={() => {
             setShowPostModal(false);
+            setSelectedPost(null);
           }}
+          onSave={handleSavePost}
         />
       )}
-    </div>
+    </motion.div>
   );
 };
