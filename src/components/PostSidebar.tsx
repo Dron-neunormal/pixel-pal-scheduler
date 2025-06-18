@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { SocialPost } from './SocialScheduler';
-import { Plus, Check } from 'lucide-react';
+import { Plus, Check, Instagram, Facebook, Youtube, Linkedin, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface PostSidebarProps {
@@ -11,17 +11,21 @@ interface PostSidebarProps {
 }
 
 const platformColors = {
+  x: 'border-l-black bg-gray-50',
   instagram: 'border-l-purple-500 bg-gradient-to-r from-purple-50 to-pink-50',
   facebook: 'border-l-blue-600 bg-blue-50',
-  twitter: 'border-l-sky-500 bg-sky-50',
+  youtube: 'border-l-red-600 bg-red-50',
   linkedin: 'border-l-blue-700 bg-blue-50',
+  pinterest: 'border-l-red-500 bg-red-50',
 };
 
 const platformIcons = {
-  instagram: '📷',
-  facebook: '👤',
-  twitter: '🐦',
-  linkedin: '💼',
+  x: X,
+  instagram: Instagram,
+  facebook: Facebook,
+  youtube: Youtube,
+  linkedin: Linkedin,
+  pinterest: '📌',
 };
 
 export const PostSidebar: React.FC<PostSidebarProps> = ({
@@ -92,72 +96,79 @@ export const PostSidebar: React.FC<PostSidebarProps> = ({
           ) : (
             <div className="p-4 space-y-3">
               <AnimatePresence>
-                {posts.map((post, index) => (
-                  <motion.div
-                    key={post.id}
-                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ 
-                      scale: 1.02, 
-                      y: -2,
-                      boxShadow: '0 8px 25px rgba(0,0,0,0.1)'
-                    }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`
-                      border-l-4 rounded-lg p-3 cursor-pointer
-                      transition-all duration-200
-                      backdrop-blur-sm bg-white/80 hover:bg-white/90
-                      ${platformColors[post.platform]}
-                    `}
-                    onClick={() => onPostSelect(post)}
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm">{platformIcons[post.platform]}</span>
-                        <span className="text-sm font-medium text-gray-600">
-                          {post.time}
-                        </span>
-                      </div>
-                      <motion.div
-                        whileHover={{ scale: 1.2 }}
-                        className="flex items-center space-x-1"
-                      >
-                        <Check className="w-4 h-4 text-green-500" />
-                      </motion.div>
-                    </div>
-                    
-                    <h4 className="font-medium text-gray-900 text-sm mb-2 line-clamp-2">
-                      {post.title}
-                    </h4>
-                    
-                    <p className="text-xs text-gray-600 line-clamp-2 mb-2">
-                      {post.content}
-                    </p>
-                    
-                    {post.hashtags.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {post.hashtags.slice(0, 3).map((tag, idx) => (
-                          <motion.span
-                            key={idx}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.1 + idx * 0.05 }}
-                            className="text-xs text-blue-600 font-medium"
-                          >
-                            {tag}
-                          </motion.span>
-                        ))}
-                        {post.hashtags.length > 3 && (
-                          <span className="text-xs text-gray-500">
-                            +{post.hashtags.length - 3}
+                {posts.map((post, index) => {
+                  const IconComponent = platformIcons[post.platform];
+                  return (
+                    <motion.div
+                      key={post.id}
+                      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ 
+                        scale: 1.02, 
+                        y: -2,
+                        boxShadow: '0 8px 25px rgba(0,0,0,0.1)'
+                      }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`
+                        border-l-4 rounded-lg p-3 cursor-pointer
+                        transition-all duration-200
+                        backdrop-blur-sm bg-white/80 hover:bg-white/90
+                        ${platformColors[post.platform]}
+                      `}
+                      onClick={() => onPostSelect(post)}
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          {typeof IconComponent === 'string' ? (
+                            <span className="text-sm">{IconComponent}</span>
+                          ) : (
+                            <IconComponent className="w-4 h-4 text-gray-600" />
+                          )}
+                          <span className="text-sm font-medium text-gray-600">
+                            {post.time}
                           </span>
-                        )}
+                        </div>
+                        <motion.div
+                          whileHover={{ scale: 1.2 }}
+                          className="flex items-center space-x-1"
+                        >
+                          <Check className="w-4 h-4 text-green-500" />
+                        </motion.div>
                       </div>
-                    )}
-                  </motion.div>
-                ))}
+                      
+                      <h4 className="font-medium text-gray-900 text-sm mb-2 line-clamp-2">
+                        {post.title}
+                      </h4>
+                      
+                      <p className="text-xs text-gray-600 line-clamp-2 mb-2">
+                        {post.content}
+                      </p>
+                      
+                      {post.hashtags.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {post.hashtags.slice(0, 3).map((tag, idx) => (
+                            <motion.span
+                              key={idx}
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.1 + idx * 0.05 }}
+                              className="text-xs text-blue-600 font-medium"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                          {post.hashtags.length > 3 && (
+                            <span className="text-xs text-gray-500">
+                              +{post.hashtags.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                })}
               </AnimatePresence>
             </div>
           )}

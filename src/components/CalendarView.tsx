@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { SocialPost } from './SocialScheduler';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Instagram, Facebook, Youtube, Linkedin, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface CalendarViewProps {
@@ -11,17 +11,21 @@ interface CalendarViewProps {
 }
 
 const platformIcons = {
-  instagram: '📷',
-  facebook: '👤',
-  twitter: '🐦',
-  linkedin: '💼',
+  x: X,
+  instagram: Instagram,
+  facebook: Facebook,
+  youtube: Youtube,
+  linkedin: Linkedin,
+  pinterest: '📌',
 };
 
 const platformColors = {
-  instagram: 'bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400',
-  facebook: 'bg-blue-600',
-  twitter: 'bg-sky-500',
-  linkedin: 'bg-blue-700',
+  x: 'bg-black hover:bg-gray-800',
+  instagram: 'bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500',
+  facebook: 'bg-blue-600 hover:bg-blue-700',
+  youtube: 'bg-red-600 hover:bg-red-700',
+  linkedin: 'bg-blue-700 hover:bg-blue-800',
+  pinterest: 'bg-red-500 hover:bg-red-600',
 };
 
 export const CalendarView: React.FC<CalendarViewProps> = ({
@@ -29,7 +33,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   selectedDate,
   onDateSelect,
 }) => {
-  const [currentDate, setCurrentDate] = useState(new Date('2025-06-12'));
+  const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 12)); // June 2025
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   
@@ -61,7 +65,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   };
 
   const goToToday = () => {
-    setCurrentDate(new Date('2025-06-12'));
+    setCurrentDate(new Date(2025, 5, 12)); // June 2025
   };
 
   const getPostsForDate = (date: string) => {
@@ -146,7 +150,8 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                 transition={{ duration: 0.2, delay: index * 0.01 }}
                 whileHover={isCurrentMonth ? { 
                   scale: 1.02, 
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  y: -2,
+                  boxShadow: '0 8px 25px rgba(0,0,0,0.1)',
                   backgroundColor: 'rgb(249, 250, 251)'
                 } : {}}
                 className={`
@@ -174,32 +179,39 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                     
                     <div className="space-y-1">
                       <AnimatePresence>
-                        {dayPosts.slice(0, 3).map((post, idx) => (
-                          <motion.div
-                            key={post.id}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ delay: idx * 0.1 }}
-                            whileHover={{ scale: 1.05, zIndex: 10 }}
-                            className={`
-                              text-xs px-2 py-1 rounded-md text-white font-medium
-                              cursor-pointer transition-all duration-200
-                              backdrop-blur-sm bg-opacity-90 hover:bg-opacity-100
-                              ${platformColors[post.platform]}
-                              shadow-sm hover:shadow-md
-                            `}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              console.log('Post clicked:', post);
-                            }}
-                          >
-                            <div className="flex items-center space-x-1">
-                              <span className="text-white drop-shadow-sm">{platformIcons[post.platform]}</span>
-                              <span className="font-medium">{post.time}</span>
-                            </div>
-                          </motion.div>
-                        ))}
+                        {dayPosts.slice(0, 3).map((post, idx) => {
+                          const IconComponent = platformIcons[post.platform];
+                          return (
+                            <motion.div
+                              key={post.id}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -10 }}
+                              transition={{ delay: idx * 0.1 }}
+                              whileHover={{ scale: 1.05, zIndex: 10 }}
+                              className={`
+                                text-xs px-2 py-1.5 rounded-md text-white font-medium
+                                cursor-pointer transition-all duration-200
+                                backdrop-blur-sm bg-opacity-90 hover:bg-opacity-100
+                                ${platformColors[post.platform]}
+                                shadow-sm hover:shadow-md
+                              `}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                console.log('Post clicked:', post);
+                              }}
+                            >
+                              <div className="flex items-center space-x-1.5">
+                                {typeof IconComponent === 'string' ? (
+                                  <span className="text-white drop-shadow-sm text-xs">{IconComponent}</span>
+                                ) : (
+                                  <IconComponent className="w-3 h-3 text-white drop-shadow-sm" />
+                                )}
+                                <span className="font-medium truncate">{post.time}</span>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
                       </AnimatePresence>
                       {dayPosts.length > 3 && (
                         <motion.div 

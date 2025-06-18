@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
 import { SocialPost } from './SocialScheduler';
-import { X, Calendar, Eye, Edit, Image, Tag, Link, Sparkles, Clock } from 'lucide-react';
+import { X, Calendar, Eye, Edit, Image, Tag, Link, Sparkles, Clock, Instagram, Facebook, Youtube, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface PostModalProps {
@@ -14,17 +15,30 @@ interface PostModalProps {
 }
 
 const platformColors = {
+  x: 'from-black to-gray-800',
   instagram: 'from-purple-500 to-pink-500',
   facebook: 'from-blue-600 to-blue-700',
-  twitter: 'from-sky-500 to-sky-600',
+  youtube: 'from-red-600 to-red-700',
   linkedin: 'from-blue-700 to-blue-800',
+  pinterest: 'from-red-500 to-red-600',
 };
 
 const platformNames = {
+  x: 'X (Twitter)',
   instagram: 'Instagram',
   facebook: 'Facebook',
-  twitter: 'Twitter',
+  youtube: 'YouTube',
   linkedin: 'LinkedIn',
+  pinterest: 'Pinterest',
+};
+
+const platformIcons = {
+  x: '𝕏',
+  instagram: Instagram,
+  facebook: Facebook,
+  youtube: Youtube,
+  linkedin: Linkedin,
+  pinterest: '📌',
 };
 
 export const PostModal: React.FC<PostModalProps> = ({
@@ -59,6 +73,8 @@ export const PostModal: React.FC<PostModalProps> = ({
     onSave(updatedPost);
   };
 
+  const IconComponent = platformIcons[editedPost.platform];
+
   return (
     <AnimatePresence>
       <motion.div
@@ -78,7 +94,13 @@ export const PostModal: React.FC<PostModalProps> = ({
           <div className="w-full">
             <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white/80 backdrop-blur-sm">
               <div className="flex items-center space-x-3">
-                <div className={`w-6 h-6 rounded bg-gradient-to-r ${platformColors[editedPost.platform]}`}></div>
+                <div className={`w-6 h-6 rounded bg-gradient-to-r ${platformColors[editedPost.platform]} flex items-center justify-center`}>
+                  {typeof IconComponent === 'string' ? (
+                    <span className="text-white text-xs font-bold">{IconComponent}</span>
+                  ) : (
+                    <IconComponent className="w-4 h-4 text-white" />
+                  )}
+                </div>
                 <h2 className="text-lg font-semibold text-gray-900">
                   Edit post for {platformNames[editedPost.platform]}
                 </h2>
@@ -129,6 +151,44 @@ export const PostModal: React.FC<PostModalProps> = ({
                   animate={{ opacity: 1, x: 0 }}
                   className="space-y-6"
                 >
+                  {/* Platform Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Platform
+                    </label>
+                    <Select
+                      value={editedPost.platform}
+                      onValueChange={(value: 'x' | 'instagram' | 'facebook' | 'youtube' | 'linkedin' | 'pinterest') => 
+                        setEditedPost({ ...editedPost, platform: value })
+                      }
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="x">X (Twitter)</SelectItem>
+                        <SelectItem value="instagram">Instagram</SelectItem>
+                        <SelectItem value="facebook">Facebook</SelectItem>
+                        <SelectItem value="youtube">YouTube</SelectItem>
+                        <SelectItem value="linkedin">LinkedIn</SelectItem>
+                        <SelectItem value="pinterest">Pinterest</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Title */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Title
+                    </label>
+                    <Input
+                      value={editedPost.title}
+                      onChange={(e) => setEditedPost({ ...editedPost, title: e.target.value })}
+                      placeholder="Post title..."
+                      className="focus:ring-2 focus:ring-blue-500 transition-all"
+                    />
+                  </div>
+
                   {/* Content */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
