@@ -77,7 +77,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   };
 
   return (
-    <div className="p-6 h-full flex flex-col">
+    <div className="p-6 h-full flex flex-col w-full">
       {/* Calendar Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
@@ -132,7 +132,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
       </div>
 
       {/* Calendar Grid */}
-      <div className="flex-1 grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden">
+      <div className="flex-1 overflow-y-auto grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden">
         <AnimatePresence mode="wait">
           {Array.from({ length: totalCells }, (_, index) => {
             const dayNumber = index - daysFromPrevMonth + 1;

@@ -317,7 +317,7 @@ export const PostModal: React.FC<PostModalProps> = ({
               </div>
 
               {/* Right Panel - Preview */}
-              <div className="w-96 bg-gray-50 p-6 border-l border-gray-200">
+              <div className="w-96 bg-gray-50 p-6 border-l overflow-y-scroll border-gray-200">
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
