@@ -4,12 +4,6 @@ import { SocialPost } from './SocialScheduler';
 import { ChevronLeft, ChevronRight, Instagram, Facebook, Youtube, Linkedin, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface CalendarViewProps {
-  posts: SocialPost[];
-  selectedDate: string;
-  onDateSelect: (date: string) => void;
-}
-
 const platformIcons = {
   x: X,
   instagram: Instagram,
@@ -28,7 +22,7 @@ const platformColors = {
   pinterest: 'bg-red-500 hover:bg-red-600',
 };
 
-export const CalendarView: React.FC<CalendarViewProps> = ({
+export const CalendarView = ({
   posts,
   selectedDate,
   onDateSelect,
@@ -52,7 +46,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
 
   const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-  const navigateMonth = (direction: 'prev' | 'next') => {
+  const navigateMonth = (direction) => {
     setCurrentDate(prev => {
       const newDate = new Date(prev);
       if (direction === 'prev') {
@@ -68,11 +62,11 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
     setCurrentDate(new Date(2025, 5, 12)); // June 2025
   };
 
-  const getPostsForDate = (date: string) => {
+  const getPostsForDate = (date) => {
     return posts.filter(post => post.date === date);
   };
 
-  const formatDate = (day: number) => {
+  const formatDate = (day) => {
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   };
 
